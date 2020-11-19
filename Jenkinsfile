@@ -3,9 +3,13 @@ pipeline {
   tools{
    maven 'M2_HOME'
   }
-  stages {
-   stage('build'){
-     steps {
+  environment {
+    registry = "oliviakt23/devops-pipeline"
+    registryCredential = 'dockerUserID'
+}
+   stages {
+     stage('build'){
+      steps {
        sh 'mvn clean'
        sh 'mvn install'
        sh 'mvn package'
@@ -19,15 +23,10 @@ pipeline {
   }
    stage('deploy'){
      steps{
-      echo "deploy step"
-      sleep 10
+      script {
+        docker.build registry + ":$BUILD_NUMBER"
     }
   } 
-    stage('docker'){
-     steps{
-      echo "image step"
-      sleep 10
-    }
-  }
+   
   }
 }
